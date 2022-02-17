@@ -1,0 +1,448 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "version": "1.0.0",
+        "title": "AIEN16 Mahjong API",
+        "description": "API Description"
+    },
+    "tags": [
+        {
+            "name": "Tile",
+            "description": "API for Tile"
+        }
+    ],
+    "consumes": [
+        "application/json"
+    ],
+    "produces": [
+        "application/json"
+    ],
+    "paths": {
+        "/api/tile": {
+            "post": {
+                "tags": [
+                    "Tile"
+                ],
+                "summary": "Create a new tile",
+                "requestBody": {
+                    "description": "In Formdata",
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/definitions/Tile"
+                            }
+                        }
+                    }
+                },
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/definitions/Tile"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Failed."
+                    },
+                    "403": {
+                        "description": "Failed to connect."
+                    }
+                }
+            }
+        },
+        "/api/tiles": {
+            "get": {
+                "tags": [
+                    "Tile"
+                ],
+                "summary": "Get all tiles",
+                "requestBody": {},
+                "parameters": [
+                    {
+                        "name": "num",
+                        "in": "query",
+                        "required": true,
+                        "description": "Page Num",
+                        "value": 1
+                    },
+                    {
+                        "name": "size",
+                        "in": "query",
+                        "required": true,
+                        "description": "Page Size",
+                        "value": 50
+                    },
+                    {
+                        "name": "keyword",
+                        "in": "query",
+                        "description": "keyword",
+                        "value": ""
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/definitions/SearchTiles"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Failed."
+                    },
+                    "403": {
+                        "description": "Failed to connect."
+                    }
+                }
+            }
+        },
+        "/api/tile/{id}": {
+            "put": {
+                "tags": [
+                    "Tile"
+                ],
+                "summary": "Update tile",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "description": "Tile id"
+                    }
+                ],
+                "requestBody": {
+                    "description": "In Formdata",
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/definitions/UpdateTile"
+                            }
+                        }
+                    }
+                },
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/definitions/basicResult"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Failed."
+                    },
+                    "403": {
+                        "description": "Failed to connect."
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Tile"
+                ],
+                "summary": "Delete tile",
+                "parameters": [
+                    {
+                        "description": "Tile Id",
+                        "required": true,
+                        "name": "id",
+                        "type": "string",
+                        "in": "path",
+                        "value": 1
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/definitions/basicResult"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Failed."
+                    },
+                    "403": {
+                        "description": "Failed to connect."
+                    }
+                }
+            },
+            "get": {
+                "tags": [
+                    "Tile"
+                ],
+                "summary": "Get a tile",
+                "parameters": [
+                    {
+                        "description": "Tile Id",
+                        "required": true,
+                        "name": "id",
+                        "type": "string",
+                        "in": "path",
+                        "value": 43
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/definitions/Tile"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Failed."
+                    },
+                    "403": {
+                        "description": "Failed to connect."
+                    }
+                }
+            }
+        },
+        "/api/canwin": {
+            "post": {
+                "tags": [
+                    "Can Win ?"
+                ],
+                "summary": "Can Win ?",
+                "requestBody": {
+                    "description": "json",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/definitions/CanWinReq"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/definitions/CanWinRes"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Failed."
+                    },
+                    "403": {
+                        "description": "Failed to connect."
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "CanWinReq": {
+            "type": "object",
+            "properties": {
+                "inIds": {
+                    "type": "array",
+                    "items": {
+                        "type": "number"
+                    },
+                    "example": [
+                        1,
+                        1,
+                        2,
+                        2,
+                        2,
+                        3,
+                        3,
+                        3,
+                        5,
+                        5
+                    ]
+                },
+                "outIds": {
+                    "type": "array",
+                    "items": {
+                        "type": "number"
+                    },
+                    "example": [
+                        10,
+                        10,
+                        10,
+                        11,
+                        11,
+                        11
+                    ]
+                },
+                "lastId": {
+                    "type": "number",
+                    "example": 5
+                }
+            }
+        },
+        "CanWinRes": {
+            "type": "object",
+            "properties": {
+                "canWin": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "Tile": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "number"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "isDragon": {
+                    "type": "boolean"
+                },
+                "isWind": {
+                    "type": "boolean"
+                },
+                "isHonor": {
+                    "type": "boolean"
+                },
+                "isDot": {
+                    "type": "boolean"
+                },
+                "isCharacter": {
+                    "type": "boolean"
+                },
+                "isFlower": {
+                    "type": "boolean"
+                },
+                "count": {
+                    "type": "number"
+                }
+            }
+        },
+        "SearchTiles": {
+            "type": "object",
+            "properties": {
+                "search": {
+                    "type": "object",
+                    "properties": {
+                        "keyword": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "pageList": {
+                    "$ref": "#/definitions/PageList"
+                },
+                "result": {
+                    "type": "object",
+                    "properties": {
+                        "total": {
+                            "type": "number"
+                        },
+                        "datas": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Tile"
+                            }
+                        }
+                    }
+                },
+                "nextPage": {
+                    "type": "object",
+                    "properties": {
+                        "search": {
+                            "type": "object",
+                            "properties": {
+                                "keyword": {
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        "pageList": {
+                            "$ref": "#/definitions/PageList"
+                        }
+                    }
+                },
+                "nextUrl": {
+                    "type": "string"
+                }
+            }
+        },
+        "PageList": {
+            "type": "object",
+            "properties": {
+                "num": {
+                    "type": "number"
+                },
+                "size": {
+                    "type": "number"
+                },
+                "total": {
+                    "type": "number"
+                }
+            }
+        },
+        "UpdateTile": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "isDragon": {
+                    "type": "boolean"
+                },
+                "isWind": {
+                    "type": "boolean"
+                },
+                "isHonor": {
+                    "type": "boolean"
+                },
+                "isDot": {
+                    "type": "boolean"
+                },
+                "isCharacter": {
+                    "type": "boolean"
+                },
+                "isFlower": {
+                    "type": "boolean"
+                },
+                "count": {
+                    "type": "number"
+                }
+            }
+        }
+    }
+}
