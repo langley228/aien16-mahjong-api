@@ -7,6 +7,10 @@
     },
     "tags": [
         {
+            "name": "Mahjong",
+            "description": "API for Mahjong"
+        },
+        {
             "name": "Tile",
             "description": "API for Tile"
         }
@@ -109,7 +113,7 @@
                     }
                 }
             }
-        },
+        },        
         "/api/tile/{id}": {
             "put": {
                 "tags": [
@@ -144,7 +148,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/definitions/basicResult"
+                                    "$ref": "#/definitions/Tile"
                                 }
                             }
                         }
@@ -181,7 +185,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/definitions/basicResult"
+                                    "$ref": "#/definitions/Tile"
                                 }
                             }
                         }
@@ -235,7 +239,7 @@
         "/api/canwin": {
             "post": {
                 "tags": [
-                    "是否胡牌?"
+                    "Mahjong"
                 ],
                 "summary": "是否胡牌?",
                 "requestBody": {
@@ -272,7 +276,7 @@
         "/api/readyhand": {
             "post": {
                 "tags": [
-                    "聽牌清單"
+                    "Mahjong"
                 ],
                 "summary": "聽牌清單",
                 "requestBody": {
@@ -416,6 +420,10 @@
                 "name": {
                     "type": "string"
                 },
+                "rank": {
+                    "type": "number",
+                    "description": "代表數字"
+                },
                 "isDragon": {
                     "type": "boolean",
                     "description": "是否為中發白"
@@ -518,6 +526,10 @@
             "properties": {
                 "name": {
                     "type": "string"
+                },
+                "rank": {
+                    "type": "number",
+                    "description": "代表數字"
                 },
                 "isDragon": {
                     "type": "boolean",
