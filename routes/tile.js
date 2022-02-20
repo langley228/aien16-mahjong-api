@@ -48,5 +48,9 @@ router.route('/canwin')
             canWin: p
         }));
     });
-
+router.route('/readyhand')
+    .post(upload.single('img'), async (req, res) => {
+        tileGroupSvc.ReadyHand(req.body.inIds, req.body.outIds).then(p => res.json(p));
+    });
+    
 module.exports = router;

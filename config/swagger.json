@@ -235,9 +235,9 @@
         "/api/canwin": {
             "post": {
                 "tags": [
-                    "Can Win ?"
+                    "是否胡牌?"
                 ],
-                "summary": "Can Win ?",
+                "summary": "是否胡牌?",
                 "requestBody": {
                     "description": "json",
                     "required": true,
@@ -268,47 +268,133 @@
                     }
                 }
             }
+        },
+        "/api/readyhand": {
+            "post": {
+                "tags": [
+                    "聽牌清單"
+                ],
+                "summary": "聽牌清單",
+                "requestBody": {
+                    "description": "json",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/definitions/ReadyHandReq"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/definitions/ReadyHandRes"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Failed."
+                    },
+                    "403": {
+                        "description": "Failed to connect."
+                    }
+                }
+            }
         }
     },
     "definitions": {
+        "ReadyHandReq": {
+            "type": "object",
+            "properties": {
+                "inIds": {
+                    "type": "array",
+                    "description": "手牌 id",
+                    "items": {
+                        "type": "number"
+                    },
+                    "example": [
+                        1,
+                        1,
+                        1,
+                        2,
+                        3,
+                        4,
+                        5,
+                        6,
+                        7,
+                        8,
+                        9,
+                        9,
+                        9
+                    ]
+                },
+                "outIds": {
+                    "type": "array",
+                    "description": "吃、碰、槓牌 id",
+                    "items": {
+                        "type": "number"
+                    },
+                    "example": [
+                        10,
+                        10,
+                        10
+                    ]
+                }
+            }
+        },
+        "ReadyHandRes": {
+            "type": "array",
+            "description": "聽牌清單",
+            "items": {
+                "$ref": "#/definitions/Tile"
+            }
+        },
         "CanWinReq": {
             "type": "object",
             "properties": {
                 "inIds": {
                     "type": "array",
+                    "description": "手牌 id",
                     "items": {
                         "type": "number"
                     },
                     "example": [
                         1,
                         1,
-                        2,
-                        2,
+                        1,
                         2,
                         3,
-                        3,
-                        3,
+                        4,
                         5,
-                        5
+                        6,
+                        7,
+                        8,
+                        9,
+                        9,
+                        9
                     ]
                 },
                 "outIds": {
                     "type": "array",
+                    "description": "吃、碰、槓牌 id",
                     "items": {
                         "type": "number"
                     },
                     "example": [
                         10,
                         10,
-                        10,
-                        11,
-                        11,
-                        11
+                        10
                     ]
                 },
                 "lastId": {
                     "type": "number",
-                    "example": 5
+                    "description": "最後一張牌 id",
+                    "example": 4
                 }
             }
         },
@@ -316,7 +402,8 @@
             "type": "object",
             "properties": {
                 "canWin": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "description": "是否胡牌?"
                 }
             }
         },
@@ -330,25 +417,36 @@
                     "type": "string"
                 },
                 "isDragon": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "description": "是否為中發白"
                 },
                 "isWind": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "description": "是否為東南西北"
                 },
                 "isHonor": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "description": "是否為東南西北中發白"
                 },
                 "isDot": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "description": "是否為筒子"
+                },
+                "isBamboo": {
+                    "type": "boolean",
+                    "description": "是否為條子"
                 },
                 "isCharacter": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "description": "是否為萬子"
                 },
                 "isFlower": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "description": "是否為花"
                 },
                 "count": {
-                    "type": "number"
+                    "type": "number",
+                    "description": "數量"
                 }
             }
         },
@@ -422,25 +520,36 @@
                     "type": "string"
                 },
                 "isDragon": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "description": "是否為中發白"
                 },
                 "isWind": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "description": "是否為東南西北"
                 },
                 "isHonor": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "description": "是否為東南西北中發白"
                 },
                 "isDot": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "description": "是否為筒子"
+                },
+                "isBamboo": {
+                    "type": "boolean",
+                    "description": "是否為條子"
                 },
                 "isCharacter": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "description": "是否為萬子"
                 },
                 "isFlower": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "description": "是否為花"
                 },
                 "count": {
-                    "type": "number"
+                    "type": "number",
+                    "description": "數量"
                 }
             }
         }

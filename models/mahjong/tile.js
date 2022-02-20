@@ -20,6 +20,7 @@ class TileModel {
     isWind = false;
     isHonor = false;
     isDot = false;
+    isBamboo = false;
     isCharacter = false;
     isFlower = false;
     count = 1;
