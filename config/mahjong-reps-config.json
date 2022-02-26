@@ -1,23 +1,44 @@
-{
+{ 
   "development": {
-    "username": "root",
-    "password": "1234",
+    "username": "aien16",
+    "password": "!QAZ2wsx",
     "database": "mahjong",
-    "host": "127.0.0.1",
-    "dialect": "mysql"
+    "host": "mahjong-api.mysql.database.azure.com",
+    "dialect": "mysql",
+    "port": 3306,
+    "ssl": true,
+    "dialectOptions": {
+       "ssl": {
+          "require": true
+       }
+     }
   },
   "test": {
-    "username": "root",
-    "password": "1234",
+    "username": "aien16",
+    "password": "!QAZ2wsx",
     "database": "mahjong",
-    "host": "127.0.0.1",
-    "dialect": "mysql"
+    "host": "mahjong-api.mysql.database.azure.com",
+    "dialect": "mysql",
+    "port": 3306,
+    "ssl": true,
+    "dialectOptions": {
+       "ssl": {
+          "require": true
+       }
+     }
   },
   "production": {
-    "username": "root",
-    "password": "1234",
+    "username": "aien16",
+    "password": "!QAZ2wsx",
     "database": "mahjong",
-    "host": "127.0.0.1",
-    "dialect": "mysql"
+    "host": "mahjong-api.mysql.database.azure.com",
+    "dialect": "mysql",
+    "port": 3306,
+    "ssl": true,
+    "dialectOptions": {
+       "ssl": {
+          "require": true
+       }
+     }
   }
 }
