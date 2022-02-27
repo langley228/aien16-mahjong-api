@@ -113,7 +113,7 @@
                     }
                 }
             }
-        },        
+        },
         "/api/tile/{id}": {
             "put": {
                 "tags": [
@@ -390,15 +390,20 @@
                         "type": "number"
                     },
                     "example": [
-                        10,
-                        10,
-                        10
+                        32,
+                        32,
+                        32
                     ]
                 },
                 "lastId": {
                     "type": "number",
                     "description": "最後一張牌 id",
                     "example": 4
+                },
+                "isSelfDrawn": {
+                    "type": "boolean",
+                    "description": "是否自摸?",
+                    "example": true
                 }
             }
         },
@@ -407,7 +412,30 @@
             "properties": {
                 "canWin": {
                     "type": "boolean",
-                    "description": "是否胡牌?"
+                    "description": "是否胡牌?",
+                    "example": true
+                },
+                "patterns": {
+                    "type": "array",
+                    "description": "胡牌牌型",
+                    "items": {
+                        "$ref": "#/definitions/CanWinRespattern"
+                    }
+                }
+            }
+        },
+        "CanWinRespattern": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "description": "牌型id",
+                    "example": "MixedOneSuit"
+                },
+                "name": {
+                    "type": "string",
+                    "description": "牌型名稱",
+                    "example": "混一色"
                 }
             }
         },

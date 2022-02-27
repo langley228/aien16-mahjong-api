@@ -1,4 +1,5 @@
 
+const PatternSvc = require('./pattern');
 module.exports = (tileSvc, mahjongModel) => {
     // const mahjongModel = require('mahjong-models');
     const { TileModel, TileSearch, TileSearchResult } = mahjongModel.Tile;
@@ -8,11 +9,19 @@ module.exports = (tileSvc, mahjongModel) => {
     class TileGroupSvc {
         constructor(tileSvc) {
             this.tileSvc = tileSvc;
+            this.patternSvc = PatternSvc(mahjongModel);
         }
-        CanWin(inIds, outIds, lastId) {
+
+
+        CanWin(option) {
+            let { inIds, outIds, lastId, isSelfDrawn } = option;
+            isSelfDrawn = isSelfDrawn === true;
             let tileSearch = new TileSearchResult();
             let __meldMapping = this.__meldMapping;
             return tileSvc.searchTile(tileSearch).then(allTiles => {
+                let result = {
+                    canWin: false
+                };
                 let tileGroups = [];
                 let concealed = [];
                 let exposed = [];
@@ -37,30 +46,39 @@ module.exports = (tileSvc, mahjongModel) => {
                 exposed = exposed.sort((a, b) => a.id - b.id);
 
                 //檢查外面的牌
-                let groups = __meldMapping(true, exposed, allTiles);
-                if (groups == null)
-                    return false;
-                groups.forEach(tg => tileGroups.push(tg));
+                let exposedGp = __meldMapping(true, exposed, allTiles);
+                if (exposedGp == null)
+                    return result;
+                exposedGp.forEach(tg => tileGroups.push(tg));
+
                 //檢查裡面的牌
-                groups = __meldMapping(false, concealed, allTiles);
-                if (groups == null)
-                    return false;
-                groups.forEach(tg => tileGroups.push(tg));
+                let concealedGp = __meldMapping(false, concealed, allTiles);
+                if (concealedGp == null)
+                    return result;
+                concealedGp.forEach(tg => tileGroups.push(tg));
 
                 //檢查將眼
                 if (tileGroups.filter(tg => tg.isPair).length !== 1)
-                    return false;
+                    return result;
 
                 //檢查組數 
                 if (tileGroups.filter(tg => tg.isMeld).length !== 5)
-                    return false;
+                    return result;
 
-                return true;
+                result.canWin = true;
+                result.patterns = this.patternSvc.Matchs({
+                    concealedGp,
+                    exposedGp,
+                    tile,
+                    isSelfDrawn
+                })
+                return result;
             });
         }
 
 
-        ReadyHand(inIds, outIds) {
+        ReadyHand(option) {
+            let { inIds, outIds } = option;
             let tileSearch = new TileSearchResult();
             let __meldMapping = this.__meldMapping;
             return tileSvc.searchTile(tileSearch).then(allTiles => {
@@ -119,7 +137,6 @@ module.exports = (tileSvc, mahjongModel) => {
                 return readyTiles;
             });
         }
-        
 
         __meldMapping_old(isExposed, tiles) {
             let tilesClone = tiles.filter(t => !t.isFlower).sort((a, b) => a.id - b.id);
@@ -224,30 +241,92 @@ module.exports = (tileSvc, mahjongModel) => {
             return null;
         }
 
-        __meldMapping(isExposed, tiles, allTiles) {
-            let tilesClone = tiles.filter(t => !t.isFlower).sort((a, b) => a.id - b.id);
+        __sevenPairsMapping(concealed, exposed, tile) {
+            if (exposed.find(t => !t.isFlower))
+                return null;
+            if (concealed.find(t => t.isFlower))
+                return null;
+            if (concealed.length === 0)
+                return null;
+            if (concealed.length !== 13)
+                return null;
+
             let tileGroups = [];
-            let sub = new Array(43);
-            for (let i = 0; i < sub.length; i++) {
-                sub[i] = {
+            let tiles = [...exposed];
+            tiles.push(tile);
+            tiles = tiles.sort((a, b) => a.id - b.id);
+            while (tiles[0].id == tiles[1].id) {
+                let pair = sub[i].tiles.splice(0, 2);
+                let pairGropp = TileGroup.create({
+                    isPair: true,
+                    isExposed: false,
+                    tiles: pair,
+                });
+                tileGroups.push(pairGropp);
+            }
+            if (tiles.length === 0 && pairGropp.length === 7)
+                return tileGroups;
+            return null;
+        }
+
+        __thirteenOrphansMapping(concealed, exposed, tile) {
+            if (exposed.find(t => !t.isFlower))
+                return null;
+            if (concealed.find(t => t.isFlower))
+                return null;
+            if (concealed.length === 0)
+                return null;
+            if (concealed.length !== 13)
+                return null;
+
+            let tiles = [...exposed];
+            tiles.push(tile);
+
+            if (tiles.find(t.isDot && t.rank > 1 && t.rank < 9))
+                return null;
+            if (tiles.find(t.isBamboo && t.rank > 1 && t.rank < 9))
+                return null;
+            if (tiles.find(t.isCharacter && t.rank > 1 && t.rank < 9))
+                return null;
+            for (let i = 0; i < tiles.length - 1; i++) {
+                if (tiles[i].id == tiles[i + 1].id)
+                    return null;
+            }
+            let tileGroups = [];
+            let pair = sub[i].tiles.splice(0, 2);
+            let pairGropp = TileGroup.create({
+                isExposed: false,
+                isThirteenOrphans: true,
+                tiles: tiles,
+            });
+            tileGroups.push(pairGropp);
+            return tileGroups;
+        }
+
+
+        __meldMapping(isExposed, tiles, allTiles) {
+            let tileGroups = [];
+            let subs = new Array(43);
+            for (let i = 0; i < subs.length; i++) {
+                subs[i] = {
                     default: allTiles.result.datas.find(v => v.id == i),
                     tiles: []
                 };
             }
             let reset = () => {
-                for (let j = 1; j < sub.length; j++) {
-                    sub[j].tiles.splice(0, sub[j].tiles.length); //clear
-                    tiles.filter(t => t.id === j).forEach(t => sub[j].tiles.push(t));
+                for (let j = 1; j < subs.length; j++) {
+                    subs[j].tiles.splice(0, subs[j].tiles.length); //clear
+                    tiles.filter(t => t.id === j).forEach(t => subs[j].tiles.push(t));
                 }
                 tileGroups.splice(0, tileGroups.length); //clear
             }
-            for (let i = 1; i < sub.length; i++) {
+            for (let i = 1; i < subs.length; i++) {
                 //reset
                 reset();
                 //pair
                 let pair = null;
-                if (!isExposed && sub[i].tiles.length > 1) {
-                    pair = sub[i].tiles.splice(0, 2);
+                if (!isExposed && subs[i].tiles.length > 1) {
+                    pair = subs[i].tiles.splice(0, 2);
                     let pairGropp = TileGroup.create({
                         isPair: true,
                         isExposed: isExposed,
@@ -258,7 +337,7 @@ module.exports = (tileSvc, mahjongModel) => {
 
 
                 let addSequenceGroup = min => {
-                    let meld = [sub[min].tiles.shift(), sub[min + 1].tiles.shift(), sub[min + 2].tiles.shift()];
+                    let meld = [subs[min].tiles.shift(), subs[min + 1].tiles.shift(), subs[min + 2].tiles.shift()];
                     let pairGropp = TileGroup.create({
                         isMeld: true,
                         isSequence: true,
@@ -310,20 +389,26 @@ module.exports = (tileSvc, mahjongModel) => {
                     //最大最小值
                     let ranges = [
                         {
-                            min: Math.min(...sub.filter(s => s.default && s.default.isDot && s.tiles.length > 0).map(s => s.default.rank)),
-                            max: Math.max(...sub.filter(s => s.default && s.default.isDot && s.tiles.length > 0).map(s => s.default.rank))
+                            min: Math.min(...subs.filter(s => s.default && s.default.isDot && s.tiles.length > 0).map(s => s.default.rank)),
+                            max: Math.max(...subs.filter(s => s.default && s.default.isDot && s.tiles.length > 0).map(s => s.default.rank))
                         },
                         {
-                            min: Math.min(...sub.filter(s => s.default && s.default.isBamboo && s.tiles.length > 0).map(s => s.default.rank)),
-                            max: Math.max(...sub.filter(s => s.default && s.default.isBamboo && s.tiles.length > 0).map(s => s.default.rank))
+                            min: Math.min(...subs.filter(s => s.default && s.default.isBamboo && s.tiles.length > 0).map(s => s.default.rank)),
+                            max: Math.max(...subs.filter(s => s.default && s.default.isBamboo && s.tiles.length > 0).map(s => s.default.rank))
                         },
                         {
-                            min: Math.min(...sub.filter(s => s.default && s.default.isCharacter && s.tiles.length > 0).map(s => s.default.rank)),
-                            max: Math.max(...sub.filter(s => s.default && s.default.isCharacter && s.tiles.length > 0).map(s => s.default.rank))
+                            min: Math.min(...subs.filter(s => s.default && s.default.isCharacter && s.tiles.length > 0).map(s => s.default.rank)),
+                            max: Math.max(...subs.filter(s => s.default && s.default.isCharacter && s.tiles.length > 0).map(s => s.default.rank))
                         }
                     ]
-                    let checkSqIndexs = sub.filter((s, index) => s.tiles.length > 0 & index >= 1 && index <= 27)
+                    let checkSqIndexs = subs
+                        .filter((s, index) =>
+                            //數量 1~2 張
+                            s.tiles.length > 0 && s.tiles.length < 3 &&
+                            //筒條萬
+                            index >= 1 && index <= 27)
                         .sort((a, b) => {
+                            //排序 1.數量小->大, 2.越靠近最大/小值優先判斷
                             if (a.tiles.length === b.tiles.length && a.default.isDot === b.default.isDot &&
                                 a.default.isBamboo === b.default.isBamboo && a.default.isCharacter === b.default.isCharacter) {
                                 let range;
@@ -339,16 +424,16 @@ module.exports = (tileSvc, mahjongModel) => {
                                 let b_sort = b.default.rank - range.min;
                                 if (range.max - b.default.rank < b_sort)
                                     b_sort = range.max - b.default.rank;
-                                //越靠近最大值最小值優先判斷
+
                                 return a_sort - b_sort;
                             }
                             return a.tiles.length - b.tiles.length;
                         })
                         .map((s) => s.default.id);
-
+                    sqGroup = null;
                     for (let j = 0; j < checkSqIndexs.length; j++) {
-                        let subitem = sub[checkSqIndexs[j]];
-                        let sqSub = sub.filter(s =>
+                        let subitem = subs[checkSqIndexs[j]];
+                        let sqSub = subs.filter(s =>
                             s.default &&
                             s.default.isDot == subitem.default.isDot &&
                             s.default.isBamboo == subitem.default.isBamboo &&
@@ -362,8 +447,8 @@ module.exports = (tileSvc, mahjongModel) => {
 
                 //刻或槓
                 for (let j = 0; j <= 34; j++) {
-                    if (sub[j].tiles.length > 2) {
-                        let meld = sub[j].tiles.splice(0, sub[j].tiles.length);
+                    if (subs[j].tiles.length > 2) {
+                        let meld = subs[j].tiles.splice(0, subs[j].tiles.length);
                         let meldGropp = TileGroup.create({
                             isMeld: true,
                             isTriplet: meld.length < 4,
@@ -375,13 +460,13 @@ module.exports = (tileSvc, mahjongModel) => {
                     }
                 }
 
-                let subCount = sub.map(s => s.tiles.length).reduce((a, b) => a + b);
+                let subCount = subs.map(s => s.tiles.length).reduce((a, b) => a + b);
                 if (subCount == 0) {
                     return tileGroups;
                 }
             }
+            return tileGroups;
         }
-
 
     }
     return new TileGroupSvc(tileSvc);
