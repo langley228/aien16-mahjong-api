@@ -1,0 +1,32 @@
+{
+    "development": {
+        "origin": [
+            "http://localhost:1616"
+        ],
+        "methods": "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS",
+        "allowedHeaders": [
+            "Content-Type",
+            "Authorization"
+        ]
+    },
+    "test": {
+        "origin": [
+            "http://localhost:1616"
+        ],
+        "methods": "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS",
+        "allowedHeaders": [
+            "Content-Type",
+            "Authorization"
+        ]
+    },
+    "production": {
+        "origin": [
+            "http://localhost:1616"
+        ],
+        "methods": "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS",
+        "allowedHeaders": [
+            "Content-Type",
+            "Authorization"
+        ]
+    }
+}
