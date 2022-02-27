@@ -44,13 +44,21 @@ router.route('/tile')
 
 router.route('/canwin')
     .post(upload.single('img'), async (req, res) => {
-        tileGroupSvc.CanWin(req.body.inIds, req.body.outIds, req.body.lastId).then(p => res.json({
-            canWin: p
-        }));
+        let data = {
+            inIds: req.body.inIds,
+            outIds: req.body.outIds,
+            lastId: req.body.lastId,
+            isSelfDrawn: req.body.isSelfDrawn == true
+        };
+        tileGroupSvc.CanWin(data).then(p => res.json(p));
     });
+
 router.route('/readyhand')
     .post(upload.single('img'), async (req, res) => {
-        tileGroupSvc.ReadyHand(req.body.inIds, req.body.outIds).then(p => res.json(p));
+        tileGroupSvc.ReadyHand({
+            inIds: req.body.inIds,
+            outIds: req.body.outIds
+        }).then(p => res.json(p));
     });
-    
+
 module.exports = router;
