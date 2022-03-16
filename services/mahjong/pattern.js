@@ -44,6 +44,7 @@ module.exports = (mahjongModel) => {
                 result.push({
                     id: 'NoTerminals',
                     name: '斷么九',
+                    point: 0
                 });
             return result;
         }
@@ -67,11 +68,13 @@ module.exports = (mahjongModel) => {
                     result.push({
                         id: 'AllHonors',
                         name: '字一色',
+                        point: 8
                     });
                 else
                     result.push({
                         id: 'AllTriplets',
                         name: '碰碰胡',
+                        point: 4
                     });
             }
             return result;
@@ -95,11 +98,13 @@ module.exports = (mahjongModel) => {
                     result.push({
                         id: 'BigFourWinds',
                         name: '大四喜',
+                        point: 16
                     });
                 else if (tripletGp.length === 3 && pairGp.length === 1)
                     result.push({
                         id: 'SmallFourWinds',
                         name: '小四喜',
+                        point: 8
                     });
             }
 
@@ -111,21 +116,25 @@ module.exports = (mahjongModel) => {
                             return {
                                 id: count > 1 ? 'EastWindEast' : 'EastWind',
                                 name: count > 1 ? '東風東' : '東風',
+                                point: count > 1 ? 2 : 1
                             };
                         case 29:
                             return {
                                 id: count > 1 ? 'SouthWindSouth' : 'SouthWind',
                                 name: count > 1 ? '南風南' : '南風',
+                                point: count > 1 ? 2 : 1
                             };
                         case 30:
                             return {
                                 id: count > 1 ? 'WestWindWest' : 'WestWind',
                                 name: count > 1 ? '西風西' : '西風',
+                                point: count > 1 ? 2 : 1
                             };
                         case 31:
                             return {
                                 id: count > 1 ? 'NorthWindNorth' : 'NorthWind',
                                 name: count > 1 ? '北風北' : '北風',
+                                point: count > 1 ? 2 : 1
                             };
                         default:
                             return null;
@@ -171,11 +180,13 @@ module.exports = (mahjongModel) => {
                     result.push({
                         id: 'BigThreeDragons',
                         name: '大三元',
+                        point: 8
                     });
                 else if (tripletGp.length === 2 && pairGp.length === 1)
                     result.push({
                         id: 'SmallThreeDragons',
                         name: '小三元',
+                        point: 4
                     });
             }
             //大小三元不另三元台
@@ -186,16 +197,19 @@ module.exports = (mahjongModel) => {
                             return {
                                 id: 'RedDragon',
                                 name: '紅中',
+                                point: 1
                             };
                         case 33:
                             return {
                                 id: 'GreenDragon',
                                 name: '青發',
+                                point: 1
                             };
                         case 34:
                             return {
                                 id: 'WhiteDragon',
                                 name: '白板',
+                                point: 1
                             };
                         default:
                             return null;
@@ -238,11 +252,13 @@ module.exports = (mahjongModel) => {
                 result.push({
                     id: 'PureOneSuit',
                     name: '清一色',
+                    point: 8
                 });
             else
                 result.push({
                     id: 'MixedOneSuit',
                     name: '混一色',
+                    point: 4
                 });
             return result;
         }
@@ -268,16 +284,19 @@ module.exports = (mahjongModel) => {
                     result.push({
                         id: 'FiveConcealedTriplets',
                         name: '五暗刻',
+                        point: 8
                     });
                 else if (count > 3)
                     result.push({
                         id: 'FourConcealedTriplets',
                         name: '四暗刻',
+                        point: 5
                     });
                 else
                     result.push({
                         id: 'ThreeConcealedTriplets',
                         name: '三暗刻',
+                        point: 2
                     });
             }
             return result;
@@ -296,18 +315,21 @@ module.exports = (mahjongModel) => {
                 result.push({
                     id: 'AllConcealedHandSelfDrawn',
                     name: '門清自摸',
+                    point: 3
                 });
             }
             else if (isSelfDrawn) {
                 result.push({
                     id: 'SelfDrawn',
                     name: '自摸',
+                    point: 1
                 });
             }
             else if (exposedGp.length === 0) {
                 result.push({
                     id: 'AllConcealedHand',
                     name: '門清',
+                    point: 1
                 });
             }
             return result;
