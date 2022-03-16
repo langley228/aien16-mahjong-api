@@ -390,9 +390,9 @@
                         "type": "number"
                     },
                     "example": [
-                        32,
-                        32,
-                        32
+                        28,
+                        28,
+                        28
                     ]
                 },
                 "lastId": {
@@ -404,7 +404,17 @@
                     "type": "boolean",
                     "description": "是否自摸?",
                     "example": true
-                }
+                },
+                "prevailingId": {
+                    "type": "number",
+                    "description": "圈風",
+                    "example": 28
+                },
+                "dealerId": {
+                    "type": "number",
+                    "description": "門風",
+                    "example": 28
+                }                
             }
         },
         "CanWinRes": {

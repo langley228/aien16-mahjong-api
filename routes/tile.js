@@ -48,7 +48,9 @@ router.route('/canwin')
             inIds: req.body.inIds,
             outIds: req.body.outIds,
             lastId: req.body.lastId,
-            isSelfDrawn: req.body.isSelfDrawn == true
+            isSelfDrawn: req.body.isSelfDrawn == true,
+            prevailingId: req.body.prevailingId,
+            dealerId: req.body.dealerId
         };
         tileGroupSvc.CanWin(data).then(p => res.json(p));
     });

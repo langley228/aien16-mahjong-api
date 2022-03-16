@@ -14,7 +14,7 @@ module.exports = (tileSvc, mahjongModel) => {
 
 
         CanWin(option) {
-            let { inIds, outIds, lastId, isSelfDrawn } = option;
+            let { inIds, outIds, lastId, isSelfDrawn, prevailingId, dealerId } = option;
             isSelfDrawn = isSelfDrawn === true;
             let tileSearch = new TileSearchResult();
             let __meldMapping = this.__meldMapping;
@@ -26,6 +26,8 @@ module.exports = (tileSvc, mahjongModel) => {
                 let concealed = [];
                 let exposed = [];
                 let tile = null;
+                let prevailing = null;
+                let dealer = null;
                 if (inIds)
                     inIds.map(id => allTiles.result.datas.find((t, index, ary) => t.id == id)).forEach(t => {
                         if (t)
@@ -38,6 +40,10 @@ module.exports = (tileSvc, mahjongModel) => {
                     });
                 if (lastId)
                     tile = allTiles.result.datas.find((t, index, ary) => t.id == lastId);
+                if (prevailingId)
+                    prevailing = allTiles.result.datas.find((t, index, ary) => t.id == prevailingId);
+                if (dealerId)
+                    dealer = allTiles.result.datas.find((t, index, ary) => t.id == dealerId);
 
                 if (tile != null) {
                     concealed.push(tile);
@@ -70,7 +76,9 @@ module.exports = (tileSvc, mahjongModel) => {
                     concealedGp,
                     exposedGp,
                     tile,
-                    isSelfDrawn
+                    isSelfDrawn,
+                    prevailing,
+                    dealer
                 })
                 return result;
             });
