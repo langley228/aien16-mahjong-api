@@ -446,6 +446,11 @@
                     "type": "string",
                     "description": "牌型名稱",
                     "example": "混一色"
+                },
+                "point": {
+                    "type": "number",
+                    "description": "台數",
+                    "example": 4
                 }
             }
         },
