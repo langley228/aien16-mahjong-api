@@ -1,7 +1,7 @@
 const express = require('express')
 const router = express.Router()
-const tileSvc = require('../config/di').services.TileSvc;
-const tileGroupSvc = require('../config/di').services.TileGroupSvc;
+const tileSvc = require('../config/di').getServices('TileSvc');
+const tileGroupSvc = require('../config/di').getServices('TileGroupSvc');
 const { TileModel, TileSearch, TileSearchResult } = require('./../models/mahjong').Tile;
 
 const multer = require('multer')

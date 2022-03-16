@@ -6,6 +6,9 @@ require('./di-mahjong')(di);
 require('./di-cors')(di);
 
 module.exports = {
+    getServices: (svcName) => {
+        return di.get(svcName);
+    },
     services: {
         TileSvc: di.get('TileSvc'),
         TileGroupSvc: di.get('TileGroupSvc')
